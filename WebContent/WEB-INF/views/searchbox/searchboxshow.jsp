@@ -174,7 +174,7 @@ function selected(o) {
 				<td>
 					<div><input type="text" id="region" onfocus="regionInput()" onkeyup="regionInput()" onblur="closeRegion()" maxlength="20"/>
 					<input type="hidden" id="regionCode"/></div>
-					<div id="showList" class="div_region"><table id="showTable" align="center" width="98%"><tr><td></td></tr></table></div>
+					<div id="showList" class="div_region"></div>
 				</td>
 			</tr>
 			<tr>
