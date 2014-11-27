@@ -8,6 +8,24 @@ public class RegionEntry {
 	private String regionName;
 	private List<RegionEntry> subRegion;
 	
+	private String spell;
+	public String getSpell() {
+		return spell;
+	}
+
+	public void setSpell(String spell) {
+		this.spell = spell;
+	}
+
+	public String getPinyin() {
+		return pinyin;
+	}
+
+	public void setPinyin(String pinyin) {
+		this.pinyin = pinyin;
+	}
+	private String pinyin;
+	
 	public RegionEntry(String code, String name) {
 		this.regionCode = code;
 		this.regionName = name;

@@ -1,8 +1,6 @@
 <%@page language="java" pageEncoding="utf-8"%>
 <html>
 <%
-	StringBuffer sb = new StringBuffer("<table align=\"center\" width=\"98%\">");
-	sb.append("</table>");
 	String path = request.getContextPath();
 	String base = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
 	request.setAttribute("base", base);
@@ -17,11 +15,11 @@ var show = false;
 
 $(function() {
 	init();
-	jQuery("#showList").hover(function () {
-		jQuery(this).show();
+	$("#showList").hover(function () {
+		$(this).show();
 		show = true;
 	}, function () {
-		jQuery(this).hide();
+		$(this).hide();
 		show = false;
 	});
 });
@@ -33,6 +31,8 @@ var Region = {
 		var region = {};
 		region.code = "";
 		region.name = "";
+		region.spell = "";
+		region.pinyin = "";
 		//region.makeSound = function(){ alert("喵喵喵"); };
 		//region.sub = null;
 		return region;
@@ -48,6 +48,8 @@ function getRegionList(obj) {
 		var temp = Region.createNew();
 		temp.code = entry.regionCode;
 		temp.name = entry.regionName;
+		temp.spell = entry.spell;
+		temp.pinyin = entry.pinyin;
 		list.push(temp);
 	});
 	return list;
@@ -56,9 +58,9 @@ function getRegionList(obj) {
 function initSelectRegion() {
 	if (regionList != null) {
 		$.each(regionList, function (i, obj) {
-			$("#showTable").append('<tr class=\"list_region_content\"><td align=\"center\" class=\"region_content_out\" id=\"' + obj.code 
+			$("#showList").append('<div class=\"region_content_out\" id=\"' + obj.code 
 					+ '\" onmouseover=\"mouseOver(this)\" onmouseout=\"mouseOut(this)\" onclick=\"regionSelected(this)\" ondblclick=\"selected(this)\">' 
-					+ obj.name + '</td></tr>');
+					+ obj.name + "(" + obj.spell + ")" + '</div>');
 		});
 	}
 }
@@ -89,61 +91,91 @@ function post(url, data, opTip, callback) {
 }
 
 function regionInput() {
-	var searchStr = jQuery("#region").val();
+	$('#showList').hide();
+	$('#showList').empty();
+	initSelectRegion();
+	var searchStr = $("#region").val();
 	if (searchStr == "") {
-		jQuery("#regionCode").val("");
-		jQuery("#region").val("");
+		$("#regionCode").val("");
+		$("#region").val("");
 	} else {
-		jQuery('#showList').show();
+		var flag = false;
+		$.each(regionList, function (i, obj) {
+			// 匹配区域名称、拼音首字母、拼音
+			if (obj.name.indexOf(searchStr) >= 0 || obj.spell.indexOf(searchStr) >= 0 || obj.pinyin.indexOf(searchStr) >= 0) {
+				$("#" + obj.code).show();
+			} else {
+				$("#" + obj.code).hide();
+			}
+			// 若当前输入框中的区域名称存在，则自动选择区域代码
+			if (obj.name == searchStr) {
+				$("#regionCode").val(obj.code);
+			}
+			// 判断当前输入框中的名称是否与区域代码匹配上
+			var currentCode = $("#regionCode").val();
+			if (obj.name == searchStr && currentCode == obj.code) {
+				flag = true;
+			}
+		});
+		// 若输入框中的名称与选择的区域代码对不上，可能是输入框中的名称选择后修改过，则清空选择的区域代码
+		if (!flag) {
+			$("#regionCode").val("");
+		}
 	}
-	jQuery('#showList').show();
+	$('#showList').show();
 }
 
 function closeRegion() {
 	if (show) {
 		;
 	} else {
-		jQuery('#showList').hide();
+		$('#showList').hide();
 	}
 }
 
 function mouseOver(o) {
-	jQuery("#" + o.id).removeClass("region_content_out");
-	jQuery("#" + o.id).addClass("region_content_over");
+	$("#" + o.id).removeClass("region_content_out");
+	$("#" + o.id).addClass("region_content_over");
 }
 
 function mouseOut(o) {
-	jQuery("#" + o.id).removeClass("region_content_over");
-	jQuery("#" + o.id).addClass("region_content_out");
+	$("#" + o.id).removeClass("region_content_over");
+	$("#" + o.id).addClass("region_content_out");
 }
 
 function regionSelected(o) {
-	jQuery("#" + o.id).addClass("region_content_selected");
-	jQuery("#showTable tr td[id!=" + o.id + "]").removeClass("region_content_selected");
+	$("#" + o.id).addClass("region_content_selected");
+	$("#showList div[id!=" + o.id + "]").removeClass("region_content_selected");
 }
 
 function selected(o) {
-	jQuery("#regionCode").val(o.id);
-	var str = jQuery("#" + o.id).html();
-	jQuery("#region").val(str);
-	jQuery('#showList').hide();
+	$("#regionCode").val(o.id);
+	$.each(regionList, function (i, obj) {
+		if (obj.code == o.id) {
+			$("#region").val(obj.name);
+		}
+	});
+	$('#showList').hide();
 }
 </script>
 <style type="text/css">
 .region_content_out {
 	font-size:12px;
+	height:20px;
 	background-color:#fdfdfd;
 	border-bottom: 1px solid #CCCCCC;
 }
 
 .region_content_over {
 	font-size:12px;
+	height:20px;
 	background-color:#FFE788;
 	border-bottom: 1px solid #CCCCCC;
 }
 
 .region_content_selected {
 	font-size:12px;
+	height:20px;
 	background-color:#FFE788;
 	border-bottom: 1px solid #CCCCCC;
 }
@@ -159,8 +191,9 @@ function selected(o) {
 	border: 1px solid #ccc;
 	background-color:#fdfdfd;
 	z-index: 999;
-	min-width:100px;
-	max-width:150px;
+	width:200px;
+	min-width:200px;
+	max-width:250px;
 	max-height:250px;
 	overflow:auto;
 	display: none;
@@ -172,13 +205,13 @@ function selected(o) {
 			<tr>
 				<td>选择地区：</td>
 				<td>
-					<div><input type="text" id="region" onfocus="regionInput()" onkeyup="regionInput()" onblur="closeRegion()" maxlength="20"/>
-					<input type="hidden" id="regionCode"/></div>
+					<div><input type="text" id="region" onclick="regionInput()" onfocus="regionInput()" onkeyup="regionInput()" onblur="closeRegion()" maxlength="20" style="width: 200px" />
+					<input type="hidden" id="regionCode" value=""/></div>
 					<div id="showList" class="div_region"></div>
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2"><input type="submit"" value="提交"/></td>
+				<td colspan="2"><input type="button" value="提交" onclick="alert($('#regionCode').val());"/></td>
 			</tr>
 		</table>
 	</body>
