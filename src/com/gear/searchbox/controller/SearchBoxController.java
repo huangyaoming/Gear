@@ -26,10 +26,10 @@ public class SearchBoxController {
 		
 		List<RegionEntry> root = new ArrayList<RegionEntry>();
 		
-		List<String> gx = Arrays.asList("南宁南宁南宁南宁", "柳州", "桂林", "梧州", "玉林", "贵港");
+		List<String> gx = Arrays.asList("南宁", "柳州", "桂林", "梧州", "玉林", "贵港");
 		List<String> gxcode = Arrays.asList("450100", "450200", "450300", "450400", "450500", "450800");
-		List<String> gxspell = Arrays.asList("nnnnnnnn", "lzhlz", "gl", "wzhwz", "yl", "gg");
-		List<String> gxpinyin = Arrays.asList("nanningnanning", "liuzhou", "guilin", "wuzhou", "yulin", "guigang");
+		List<String> gxspell = Arrays.asList("nn", "lzhlz", "gl", "wzhwz", "yl", "gg");
+		List<String> gxpinyin = Arrays.asList("nanning", "liuzhou", "guilin", "wuzhou", "yulin", "guigang");
 		for (int i = 0; i < gx.size(); i++) {
 			RegionEntry temp = new RegionEntry(gxcode.get(i), gx.get(i));
 			temp.setPinyin(gxpinyin.get(i));
