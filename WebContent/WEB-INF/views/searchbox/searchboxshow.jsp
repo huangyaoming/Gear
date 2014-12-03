@@ -33,7 +33,7 @@ var Region = {
 		region.name = "";
 		region.spell = "";
 		region.pinyin = "";
-		//region.makeSound = function(){ alert("喵喵喵"); };
+		//region.makeSound = function(){ alert("message"); };
 		//region.sub = null;
 		return region;
 	}
