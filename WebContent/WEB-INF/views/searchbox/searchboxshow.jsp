@@ -15,7 +15,7 @@ var show = false;
 
 $(function() {
 	init();
-	$("#showList").hover(function () {
+	$("#divShow").hover(function () {
 		$(this).show();
 		show = true;
 	}, function () {
@@ -58,9 +58,9 @@ function getRegionList(obj) {
 function initSelectRegion() {
 	if (regionList != null) {
 		$.each(regionList, function (i, obj) {
-			$("#showList").append('<div class=\"region_content_out\" id=\"' + obj.code 
+			$("#showList").append('<li class=\"region_content_out\" id=\"' + obj.code 
 					+ '\" onmouseover=\"mouseOver(this)\" onmouseout=\"mouseOut(this)\" onclick=\"regionSelected(this)\" ondblclick=\"selected(this)\">' 
-					+ obj.name + "(" + obj.spell + ")" + '</div>');
+					+ obj.name + "(" + obj.spell + ")" + '</li>');
 		});
 	}
 }
@@ -91,7 +91,7 @@ function post(url, data, opTip, callback) {
 }
 
 function regionInput() {
-	$('#showList').hide();
+	$('#divShow').hide();
 	$('#showList').empty();
 	initSelectRegion();
 	var searchStr = $("#region").val();
@@ -122,14 +122,14 @@ function regionInput() {
 			$("#regionCode").val("");
 		}
 	}
-	$('#showList').show();
+	$('#divShow').show();
 }
 
 function closeRegion() {
 	if (show) {
 		;
 	} else {
-		$('#showList').hide();
+		$('#divShow').hide();
 	}
 }
 
@@ -145,7 +145,7 @@ function mouseOut(o) {
 
 function regionSelected(o) {
 	$("#" + o.id).addClass("region_content_selected");
-	$("#showList div[id!=" + o.id + "]").removeClass("region_content_selected");
+	$("#showList li[id!=" + o.id + "]").removeClass("region_content_selected");
 }
 
 function selected(o) {
@@ -155,7 +155,7 @@ function selected(o) {
 			$("#region").val(obj.name);
 		}
 	});
-	$('#showList').hide();
+	$('#divShow').hide();
 }
 </script>
 <style type="text/css">
@@ -164,6 +164,7 @@ function selected(o) {
 	height:20px;
 	background-color:#fdfdfd;
 	border-bottom: 1px solid #CCCCCC;
+	list-style-type: none;
 }
 
 .region_content_over {
@@ -171,6 +172,7 @@ function selected(o) {
 	height:20px;
 	background-color:#FFE788;
 	border-bottom: 1px solid #CCCCCC;
+	list-style-type: none;
 }
 
 .region_content_selected {
@@ -178,6 +180,7 @@ function selected(o) {
 	height:20px;
 	background-color:#FFE788;
 	border-bottom: 1px solid #CCCCCC;
+	list-style-type: none;
 }
 
 .list_region_content {
@@ -207,7 +210,7 @@ function selected(o) {
 				<td>
 					<div><input type="text" id="region" onclick="regionInput()" onfocus="regionInput()" onkeyup="regionInput()" onblur="closeRegion()" maxlength="20" style="width: 200px" />
 					<input type="hidden" id="regionCode" value=""/></div>
-					<div id="showList" class="div_region"></div>
+					<div id="divShow" class="div_region"><ul id="showList" style="margin-left: 0px;"></ul></div>
 				</td>
 			</tr>
 			<tr>
